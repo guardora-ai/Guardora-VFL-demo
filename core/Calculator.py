@@ -88,21 +88,13 @@ class Calculator:
 
         Calculator.dict = cfg['passive_parties_list']['dict']
 
-        Calculator.lmd = float(cfg['params.train']['lmd'])
-        Calculator.gma = float(cfg['params.train']['gma'])
-        Calculator.quantile = np.linspace(0, 1, int(cfg['params.train']['quantile']) + 1).tolist()[1:-1]
-        Calculator.min_sample = int(cfg['params.train']['min_sample'])
-        Calculator.max_depth = int(cfg['params.train']['max_depth'])
-        Calculator.max_trees = int(cfg['params.train']['max_trees'])
-
         Calculator.lin_lr = float(cfg['params.train']['lin_lr'])
         Calculator.log_lr = float(cfg['params.train']['log_lr'])
         Calculator.soft_lr = float(cfg['params.train']['soft_lr'])
         Calculator.epochs = int(cfg['params.train']['epochs'])
 
-        Calculator.init_pred = float(cfg['params.predict']['init_pred'])
         Calculator.output_thresh = float(cfg['params.predict']['output_thresh'])
-        Calculator.keypair_gen_length = int(cfg['encryption']['keypair_gen_length'])
+        Calculator.keypair_gen_length = int(cfg['encryption']['key_bitlength'])
         logger.debug(f'Config loaded. Trees and depth: ({Calculator.max_trees}, {Calculator.max_depth}). ')
 
     @staticmethod
@@ -112,23 +104,16 @@ class Calculator:
             'dict': {'1': {'ip': '127.0.0.1', 'port': 50051}}
         }
         cfg['params.train'] = {
-            'lmd': 10.0,
-            'gma': 0.0, 
-            'quantile': 8, 
-            'min_sample': 20,
-            'max_depth': 5,
-            'max_trees': 4,
             'lin_lr': 0.05,
             'log_lr': 0.15,
             'soft_lr': 0.1,
             'epochs': 10
         }
         cfg['params.predict'] = {
-            'init_pred': 0.0,
             'output_thresh': 0.5
         }
         cfg['encryption'] = {
-            'keypair_gen_length': 512
+            'key_bitlength': 512
         }
         with open(config_path, 'w+') as config_file:
             cfg.write(config_file)
