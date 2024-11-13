@@ -230,7 +230,7 @@ class PassiveParty:
     def dump_weight(self, model_name):
 
         if not os.path.exists(self.dump_model_path):
-            os.mkdir(self.dump_model_path)
+            os.makedirs(self.dump_model_path)
             logger.error(f'{self.name.upper()}: Model saving dir \'{self.dump_model_path}\' was created. ')
 
         file_path = os.path.join(self.dump_model_path, model_name)

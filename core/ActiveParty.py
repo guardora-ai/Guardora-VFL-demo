@@ -313,7 +313,7 @@ class ActiveParty:
         dir_path, file_name = file_path, self.model_path
 
         if not os.path.exists(dir_path):
-            os.mkdir(dir_path)
+            os.makedirs(dir_path)
             logger.error(f'{self.name.upper()}: Model saving path \'{dir_path}\' was created. ')
 
         if not file_name:
