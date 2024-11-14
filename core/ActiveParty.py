@@ -314,7 +314,7 @@ class ActiveParty:
 
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-            logger.error(f'{self.name.upper()}: Model saving path \'{dir_path}\' was created. ')
+            logger.info(f'{self.name.upper()}: Model saving path \'{dir_path}\' was created. ')
 
         if not file_name:
             self.model_path = time.strftime(f'{self.mod}_model%y%m%d.json', time.localtime())
