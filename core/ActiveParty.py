@@ -177,9 +177,9 @@ class ActiveParty:
 
         logger.info(f'{self.name.upper()}: Aligned sample sending to all passive parties. ')
 
-        self.dataset = self.dataset.loc[[train_idx_map[th] for th in train_hash], :]
+        self.dataset = self.dataset.loc[sorted([train_idx_map[th] for th in train_hash]), :]
         if self.testset is not None:
-            self.testset = self.testset.loc[[valid_idx_map[vh] for vh in valid_hash], :]
+            self.testset = self.testset.loc[sorted([valid_idx_map[vh] for vh in valid_hash]), :]
 
     def decrypt_salt_grad(self, salt_grad):
 

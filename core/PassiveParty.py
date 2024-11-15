@@ -108,13 +108,13 @@ class PassiveParty:
         with open(os.path.join(self.path_list[0], f'idx_map.json'), 'r') as f:
             map_data = json.load(f)
 
-        train_idx = [map_data['train_map'][th] for th in set(req.train_hash)]
+        train_idx = sorted([map_data['train_map'][th] for th in set(req.train_hash)])
         self.dataset = self.dataset.loc[train_idx, :]
 
         logger.info(f'{self.name.upper()}: Received aligned sample with train length {len(train_idx)}. ')
 
         if self.testset is not None and req.valid_hash is not None:
-            valid_idx = [map_data['valid_map'][vh] for vh in set(req.valid_hash)]
+            valid_idx = sorted([map_data['valid_map'][vh] for vh in set(req.valid_hash)])
             self.testset = self.testset.loc[valid_idx, :]
 
         self.train_status = 'Ready'

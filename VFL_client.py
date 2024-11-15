@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--validPath', dest='validPath', help='Path to .csv with valid dataset', type=str, default=r"data/active_party_test.csv")
     parser.add_argument('-d', '--id-col', dest='id_col', help='Name of ID column in the datasets', type=str, default='ID')
     parser.add_argument('-y', '--target', dest='target', help='Name of Target column in the datasets', type=str, default='y')
-    parser.add_argument('-f', '--frac', dest='frac', help='Proportion of data randomly selected from the datasets', type=float, default=1.0)
+    parser.add_argument('-f', '--frac', dest='frac', help='Proportion of data randomly selected from the datasets', type=float, default=0.5)
     parser.add_argument('-ns', '--nosecure', dest='secure_channel', help='Communication channel encryption flag',
                         action='store_false', default=True)
     parser.add_argument('-cp', '--cert_path', dest='cert_path', help='Path to .crt with server certificate',
