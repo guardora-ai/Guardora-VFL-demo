@@ -303,7 +303,7 @@ class ActiveParty:
                         averaging = 'weighted'
                     else:
                         test_loss = self.model.get_loss(test_preds, test_target)
-                        test_preds = pd.Series(test_preds[:, 0]).apply(lambda x: 1 if x > Calculator.output_thresh else 0)
+                        test_preds = pd.Series(test_preds[:, 0]).apply(lambda x: 1 if x >= Calculator.output_thresh else 0)
                         averaging = 'binary'
 
                     logger.info(f'{self.name.upper()}: Epoch {epoch}, Train_loss = {self.train_loss:.3f}, '

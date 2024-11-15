@@ -123,7 +123,11 @@ class PassiveParty:
     def calc_salt_grad(self, request):
 
         self.train_status = 'Busy'
-        self.salt = np.random.random((self.weight.shape[0], self.weight.shape[1]))
+        import random
+        rng = random.SystemRandom(0)
+        self.salt = self.dataset.index.tolist()
+        self.salt = [rng.random() for _ in range(self.weight.shape[0] * self.weight.shape[1])]
+        self.salt = np.reshape(np.array(self.salt), self.weight.shape)
 
         grad = pd.Series(np.array(request.grad))
         grad = grad.apply(load_encrypted_number, pub_key=self.active_pub_key)
