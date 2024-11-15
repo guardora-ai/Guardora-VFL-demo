@@ -187,8 +187,8 @@ class PassiveParty:
             self.weight = 0.1 * np.ones((self.num_features, 1), dtype=np.float32)
             if mod == 'softmax':
                 self.weight = 0.1 * np.ones((self.num_features, n_classes), dtype=np.float32)
-            self.train_dataset = self.scaler.fit_transform(self.dataset.values)
-            self.test_dataset = self.scaler.fit_transform(self.testset.values)
+            self.train_dataset = self.dataset.values
+            self.test_dataset = self.testset.values
 
         if type_of_data == 'train':
             data = self.train_dataset @ self.weight
@@ -201,26 +201,6 @@ class PassiveParty:
 
         self.train_status = 'Ready'
         logger.info(f'{self.name.upper()}: Calc weighted dataset and send to active party. ')
-
-        return res
-
-    def confirm_split(self, request):
-
-        assert request.party_name == self.name, logger.error(f'Incorrect party name: \'{request.party_name}\'')
-        best_split = self.local_splits[int(request.index)]
-
-        look_up_index = self.look_up_table.shape[0]
-        self.look_up_table.loc[look_up_index] = {
-            'feature_name': best_split[0],
-            'feature_thresh': best_split[1]
-        }
-
-        res = pb2.Response(party_name=self.name, index=int(look_up_index))
-
-        for ls in best_split[2]:
-            res.left_space.append(ls)
-
-        logger.info(f'{self.name.upper()}: Confirmation received, update look up table on index: {look_up_index}. ')
 
         return res
 

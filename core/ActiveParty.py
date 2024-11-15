@@ -31,7 +31,7 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 class ActiveParty:
-    def __init__(self, mod, config_path) -> None:
+    def __init__(self, mod, config_path, credentials=None) -> None:
         Calculator.load_config(config_path)
 
         self.mod = mod
@@ -69,6 +69,10 @@ class ActiveParty:
         self.n_classes = 2
         self.scaler = Pipeline([('scaler', StandardScaler())])
 
+        self.credentials = credentials
+        self.size_params = [('grpc.max_send_message_length', 512 * 1024 * 1024),
+                            ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
+
     def load_dataset(self, data_path: str, test_path: str = None, id_col: str = 'ID', target: str = 'y', frac: float = 0.5):
 
         dataset = pd.read_csv(data_path)
@@ -97,7 +101,11 @@ class ActiveParty:
             for _, value in self.passive_parties.items():
                 ip = value['ip']
                 port = value['port']
-                with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                if self.credentials is not None:
+                    channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                  options=self.size_params)
+                with channel:
                     stub = pb2_grpc.MVP_VFLStub(channel)
                     response = stub.request_analysis(pb2.Request(party_name=self.name, processor='recvActivePubKey', pub_key=pub_key))
                     self.passive_port[response.party_name] = [ip, port]
@@ -126,7 +134,11 @@ class ActiveParty:
             for _, value in self.passive_parties.items():
                 ip = value['ip']
                 port = value['port']
-                with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                if self.credentials is not None:
+                    channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                  options=self.size_params)
+                with channel:
                     stub = pb2_grpc.MVP_VFLStub(channel)
                     response = stub.request_analysis(pb2.Request(party_name=self.name, processor='initSampleAlign'))
                     train_hash = train_hash.intersection(set(response.train_hash))
@@ -153,7 +165,11 @@ class ActiveParty:
             for _, value in self.passive_parties.items():
                 ip = value['ip']
                 port = value['port']
-                with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                if self.credentials is not None:
+                    channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                  options=self.size_params)
+                with channel:
                     stub = pb2_grpc.MVP_VFLStub(channel)
                     stub.request_analysis(request)
 
@@ -201,10 +217,10 @@ class ActiveParty:
             self.model.init_weight(self.num_features)
 
             train_dataset = self.dataset.drop(['y'], axis=1).values
-            train_dataset = self.scaler.fit_transform(train_dataset)
+            #train_dataset = self.scaler.fit_transform(train_dataset)
 
             test_dataset = self.testset.drop(['y'], axis=1).values
-            test_dataset = self.scaler.fit_transform(test_dataset)
+            #test_dataset = self.scaler.fit_transform(test_dataset)
 
             for epoch in range(self.epochs):
 
@@ -215,7 +231,11 @@ class ActiveParty:
                     for _, value in self.passive_parties.items():
                         ip = value['ip']
                         port = value['port']
-                        with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                        channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                        if self.credentials is not None:
+                            channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                          options=self.size_params)
+                        with channel:
                             stub = pb2_grpc.MVP_VFLStub(channel)
                             response = stub.request_analysis(pb2.Request(party_name=self.name, index=self.n_classes,
                                                                          processor='initWeightedData', type=type_proc,
@@ -246,7 +266,11 @@ class ActiveParty:
                     for _, value in self.passive_parties.items():
                         ip = value['ip']
                         port = value['port']
-                        with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                        channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                        if self.credentials is not None:
+                            channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                          options=self.size_params)
+                        with channel:
                             stub = pb2_grpc.MVP_VFLStub(channel)
                             response = stub.request_analysis(request)
                             logger.info(f'{self.name.upper()}: Received salt grad from {response.party_name}. ')
@@ -297,7 +321,11 @@ class ActiveParty:
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
                     port = value['port']
-                    with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                    channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                    if self.credentials is not None:
+                        channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                      options=self.size_params)
+                    with channel:
                         stub = pb2_grpc.MVP_VFLStub(channel)
                         stub.request_analysis(pb2.Request(party_name=self.name, processor='recvDumpModel',
                                                           model_name=self.model_path))
@@ -358,9 +386,13 @@ class ActiveParty:
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
                     port = value['port']
-                    with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                    channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                    if self.credentials is not None:
+                        channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                      options=self.size_params)
+                    with channel:
                         stub = pb2_grpc.MVP_VFLStub(channel)
-                        response = stub.request_analysis(pb2.Request(party_name=self.name, processor='recvLoadModel',
+                        stub.request_analysis(pb2.Request(party_name=self.name, processor='recvLoadModel',
                                                                      model_name=self.model_path))
             init_predict()
 
@@ -375,7 +407,11 @@ class ActiveParty:
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
                     port = value['port']
-                    with grpc.insecure_channel(f"{ip}:{port}") as channel:
+                    channel = grpc.insecure_channel(f"{ip}:{port}", options=self.size_params)
+                    if self.credentials is not None:
+                        channel = grpc.secure_channel(f"{ip}:{port}", credentials=self.credentials,
+                                                      options=self.size_params)
+                    with channel:
                         stub = pb2_grpc.MVP_VFLStub(channel)
                         response = stub.request_analysis(pb2.Request(party_name=self.name, processor='initWeightedData',
                                                                      type=type_proc, index=self.n_classes))
