@@ -20,10 +20,6 @@ def serialize_encrypted_number(enc: EncryptedNumber) -> dict:
 
 def load_encrypted_number(cipher_data, pub_key: PaillierPublicKey) -> EncryptedNumber:
 
-    #err_msg = 'Invalid cipher data. '
-    #assert 'v' in cipher_data, logger.error(err_msg)
-    #assert 'e' in cipher_data, logger.error(err_msg)
-
     enc = EncryptedNumber(
         public_key=pub_key, 
         ciphertext=int(cipher_data.v),

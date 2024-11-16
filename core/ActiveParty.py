@@ -130,7 +130,7 @@ class ActiveParty:
 
         def init_sample_align():
             nonlocal train_hash, valid_hash
-            logger.debug(f'{self.name.upper()}: Initiating sample alignment. ')
+            logger.info(f'{self.name.upper()}: Initiating sample alignment. ')
             for _, value in self.passive_parties.items():
                 ip = value['ip']
                 port = value['port']
@@ -161,7 +161,7 @@ class ActiveParty:
                 req.valid_hash.append(h)
 
         def send_aligned_sample(request):
-            logger.debug(f'{self.name.upper()}: Sending aligned sample. ')
+            logger.info(f'{self.name.upper()}: Sending aligned sample. ')
             for _, value in self.passive_parties.items():
                 ip = value['ip']
                 port = value['port']
@@ -217,17 +217,14 @@ class ActiveParty:
             self.model.init_weight(self.num_features)
 
             train_dataset = self.dataset.drop(['y'], axis=1).values
-            #train_dataset = self.scaler.fit_transform(train_dataset)
-
             test_dataset = self.testset.drop(['y'], axis=1).values
-            #test_dataset = self.scaler.fit_transform(test_dataset)
 
             for epoch in range(self.epochs):
 
                 self.cur_preds = self.model.weighted_data(train_dataset)
 
                 def init_weighted_data(type_proc):
-                    logger.debug(f'{self.name.upper()}: Initiating calc weighted data. ')
+                    logger.info(f'{self.name.upper()}: Initiating calc weighted data. ')
                     for _, value in self.passive_parties.items():
                         ip = value['ip']
                         port = value['port']
@@ -249,7 +246,12 @@ class ActiveParty:
                 self.cur_preds = self.model.get_pred(self.cur_preds)
                 self.diff_pred_target = self.model.get_cur_diff(self.cur_preds, train_target)
 
-                grad = self.model.get_grad(train_dataset.shape[0], np.transpose(train_dataset), self.diff_pred_target)
+                if self.mod == 'softmax':
+                    grad = self.model.get_grad(self.n_classes, np.transpose(train_dataset), self.diff_pred_target)
+                else:
+                    grad = self.model.get_grad(train_dataset.shape[0], np.transpose(train_dataset),
+                                               self.diff_pred_target)
+
                 self.train_loss = self.model.get_loss(self.cur_preds, train_target)                
 
                 self.model.update_weight(grad)
@@ -280,9 +282,11 @@ class ActiveParty:
                             req = pb2.Request(party_name=self.name, processor='recvDecryptedGradients')
                             for d in dec_salt_grad:
                                 req.array_float.append(d)
-                            req.lr = self.model.lr
-                            req.factor = self.model.factor
-                            response = stub.request_analysis(req)
+                            if self.mod == 'softmax':
+                                req.factor = (self.model.lr * self.model.factor) / self.n_classes
+                            else:
+                                req.factor = (self.model.lr * self.model.factor) / train_dataset.shape[0]
+                            stub.request_analysis(req)
 
                 send_gradients(req)
 
@@ -311,12 +315,13 @@ class ActiveParty:
                                 f'Test precision: {precision_score(test_target, test_preds, average=averaging):.3f}, '
                                 f'Test recall: {recall_score(test_target, test_preds, average=averaging):.3f}, '
                                 f'Test f1: {f1_score(test_target, test_preds, average=averaging):.3f}')
-                except:
-                    pass
+                except Exception as error:
+                    # handle the exception
+                    logger.error(f'{self.name.upper()}: Error during testing after epoch {epoch}. Error message: {error}')
 
             def init_dump_model():
                 self.model_path = time.strftime(f'{self.mod}_model%y%m%d.json', time.localtime())
-                logger.debug(f'{self.name.upper()}: Initiating dump trained model parameters for all passive parties. ')
+                logger.info(f'{self.name.upper()}: Initiating dump trained model parameters for all passive parties. ')
 
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
@@ -382,7 +387,7 @@ class ActiveParty:
         if self.mod == 'linear' or self.mod == 'logistic' or self.mod == 'softmax':
 
             def init_predict():
-                logger.debug(f'{self.name.upper()}: Initiating loading model parameters by all passive parties for predicting. ')
+                logger.info(f'{self.name.upper()}: Initiating loading model parameters by all passive parties for predicting. ')
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
                     port = value['port']
@@ -403,7 +408,7 @@ class ActiveParty:
             self.cur_preds = self.model.weighted_data(test_dataset)
 
             def init_weighted_data(type_proc):
-                logger.debug(f'{self.name.upper()}: Initiating calc weighted data. ')
+                logger.info(f'{self.name.upper()}: Initiating calc weighted data. ')
                 for _, value in self.passive_parties.items():
                     ip = value['ip']
                     port = value['port']

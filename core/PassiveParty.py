@@ -158,16 +158,11 @@ class PassiveParty:
         self.train_status = 'Busy'
 
         grad = pd.Series(np.array(request.array_float))
-        lr = float(request.lr)
         factor = float(request.factor)
 
-        grad = np.reshape(grad, self.weight.shape)
+        grad = np.reshape(grad, self.weight.shape) - self.salt
 
-        grad = grad - self.salt
-
-        grad = (factor / self.train_dataset.shape[0]) * grad
-
-        self.weight = self.weight - lr * grad
+        self.weight = self.weight - factor * grad
 
         self.train_status = 'Ready'
         logger.info(f'{self.name.upper()}: Model weight successfully updated. ')

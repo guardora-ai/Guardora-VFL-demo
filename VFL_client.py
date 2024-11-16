@@ -17,7 +17,7 @@ def create_client_credentials(server_cert_path, server_key_path, root_ca_cert_pa
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('-c', '--congig', dest='config_filepath', help='config filepath', default='config/config.conf', type=str)
-    parser.add_argument('-m', '--mod', dest='mod', help='One from list \'linear\', \'logistic\', \'softmax\'', type=str, default='logistic')
+    parser.add_argument('-m', '--mod', dest='mod', help='One from list \'linear\', \'logistic\', \'softmax\'', type=str, default='softmax')
     parser.add_argument('-t', '--trainPath', dest='trainPath', help='Path to .csv with train dataset', type=str, default=r"data/active_party_train.csv")
     parser.add_argument('-v', '--validPath', dest='validPath', help='Path to .csv with valid dataset', type=str, default=r"data/active_party_test.csv")
     parser.add_argument('-d', '--id-col', dest='id_col', help='Name of ID column in the datasets', type=str, default='ID')

@@ -95,7 +95,7 @@ class Calculator:
 
         Calculator.output_thresh = float(cfg['params.predict']['output_thresh'])
         Calculator.keypair_gen_length = int(cfg['encryption']['key_bitlength'])
-        logger.debug(f'Config loaded. Trees and depth: ({Calculator.max_trees}, {Calculator.max_depth}). ')
+        logger.info(f'Config loaded. ')
 
     @staticmethod
     def generate_config(config_path='config/config.conf'):
