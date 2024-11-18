@@ -17,12 +17,16 @@ def create_client_credentials(server_cert_path, server_key_path, root_ca_cert_pa
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('-c', '--congig', dest='config_filepath', help='config filepath', default='config/config.conf', type=str)
-    parser.add_argument('-m', '--mod', dest='mod', help='One from list \'linear\', \'logistic\', \'softmax\'', type=str, default='softmax')
-    parser.add_argument('-t', '--trainPath', dest='trainPath', help='Path to .csv with train dataset', type=str, default=r"data/active_party_train.csv")
-    parser.add_argument('-v', '--validPath', dest='validPath', help='Path to .csv with valid dataset', type=str, default=r"data/active_party_test.csv")
+    parser.add_argument('-m', '--mod', dest='mod', help='One from list \'linear\', \'logistic\', \'softmax\'', type=str,
+                        default='softmax')
+    parser.add_argument('-t', '--trainPath', dest='trainPath', help='Path to .csv with train dataset', type=str,
+                        default=r"data/active_party_train.csv")
+    parser.add_argument('-v', '--validPath', dest='validPath', help='Path to .csv with valid dataset', type=str,
+                        default=r"data/active_party_test.csv")
     parser.add_argument('-d', '--id-col', dest='id_col', help='Name of ID column in the datasets', type=str, default='ID')
     parser.add_argument('-y', '--target', dest='target', help='Name of Target column in the datasets', type=str, default='y')
-    parser.add_argument('-f', '--frac', dest='frac', help='Proportion of data randomly selected from the datasets', type=float, default=0.5)
+    parser.add_argument('-f', '--frac', dest='frac', help='Proportion of data randomly selected from the datasets',
+                        type=float, default=0.5)
     parser.add_argument('-ns', '--nosecure', dest='secure_channel', help='Communication channel encryption flag',
                         action='store_false', default=True)
     parser.add_argument('-cp', '--cert_path', dest='cert_path', help='Path to .crt with server certificate',

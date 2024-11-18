@@ -228,7 +228,6 @@ class PassiveParty:
         assert os.path.isfile(file_path), logger.error(f'Error: wrong file_path \'{file_path}\'')
 
         self.testset['bias'] = [1.0 for i in self.testset.index]
-        self.test_dataset = self.scaler.fit_transform(self.testset.values)
 
         with open(file_path, 'r') as f:
             model_data = json.load(f)

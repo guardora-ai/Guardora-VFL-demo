@@ -403,7 +403,6 @@ class ActiveParty:
 
             self.testset['bias'] = [1.0 for i in self.testset.index]
             test_dataset = self.testset.drop(['y'], axis=1).values
-            test_dataset = self.scaler.fit_transform(test_dataset)
 
             self.cur_preds = self.model.weighted_data(test_dataset)
 
@@ -532,7 +531,7 @@ class Model_LogReg:
         return np.matmul(data, self.weight)
 
     def get_pred(self, pred):
-        return np.power(np.exp(-1. * pred) + 1., -1)
+        return np.clip(1. / (np.exp(-1. * pred) + 1.), a_min=1e-10, a_max=None)
 
     def get_cur_diff(self, pred, target):
         return pred - target
@@ -593,7 +592,7 @@ class Model_SoftReg:
         self.weight -= (self.lr * g)
 
     def get_pred(self, pred):
-        exp = np.exp(pred)
+        exp = np.exp(np.clip(pred, a_min=-100., a_max=100.))
         return exp / np.sum(exp, axis=1, keepdims=True)
 
     def get_cur_diff(self, pred, target):

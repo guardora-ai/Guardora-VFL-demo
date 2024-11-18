@@ -38,14 +38,8 @@ class MVP_VFL(pb2_grpc.MVP_VFLServicer):
             return self.passive_party.calc_updates_for_weight(request)
         elif request.processor == 'recvDumpModel':
             return self.passive_party.dump_weight(request.model_name)
-        elif request.processor == 'recvGradients':
-            return self.passive_party.splits_sum(request)
-        elif request.processor == 'confirmSplit':
-            return self.passive_party.confirm_split(request)
         elif request.processor == 'recvLoadModel':
             return self.passive_party.load_weight(request.model_name)
-        elif request.processor == 'recvPredict':
-            return self.passive_party.predict(request)
         else:
             return self.passive_party.empty_res()
 
