@@ -592,8 +592,8 @@ class Model_SoftReg:
         self.weight -= (self.lr * g)
 
     def get_pred(self, pred):
-        exp = np.exp(np.clip(pred, a_min=-100., a_max=100.))
-        return exp / np.sum(exp, axis=1, keepdims=True)
+        exp = np.exp(np.clip(pred, a_min=-709., a_max=709.))
+        return np.clip(exp / np.sum(exp, axis=1, keepdims=True), a_min=1e-10, a_max=None)
 
     def get_cur_diff(self, pred, target):
         return pred - target
