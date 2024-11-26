@@ -1,13 +1,13 @@
 PythonPaillier,
 
-author = {CSIRO's Data61},
+author = CSIRO's Data61,
 
-title = {Python Paillier Library},
+title = Python Paillier Library,
 
-year = {2013},
+year = 2013,
 
-publisher = {GitHub},
+publisher = GitHub,
 
-journal = {GitHub Repository},
+journal = GitHub Repository,
 
-howpublished = {\url{https://github.com/data61/python-paillier}}
+howpublished = https://github.com/data61/python-paillier
