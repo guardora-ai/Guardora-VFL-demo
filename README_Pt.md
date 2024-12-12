@@ -95,3 +95,7 @@ O participante que possui as etiquetas-alvo deve configurar os parâmetros de tr
 
 ### **Inferência**
 Após o treinamento, cada participante retém os parâmetros do modelo global relevantes para seus dados. Durante a inferência, cada participante carrega seus respectivos parâmetros do modelo e realiza inferência sobre seus registros.
+
+---
+
+Guardora-VFL-Demo é licenciado sob Licença de Software Aberto Não Comercial (Non-Commercial Open Software License - NCOSL) (consulte o arquivo LICENSE para obter informações completas)

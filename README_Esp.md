@@ -95,3 +95,7 @@ El participante que posea las etiquetas objetivo debe configurar los parámetros
 
 ### **Inferencia**
 Después del entrenamiento, cada participante conserva los parámetros del modelo global relevantes para sus datos. Durante la inferencia, cada participante carga sus respectivos parámetros del modelo y realiza inferencia sobre sus registros.
+
+---
+
+Guardora-VFL-Demo tiene una licencia de software abierto no comercial (Non-Commercial Open Software License - NCOSL) (consulte el archivo de LICENSE para obtener información completa)

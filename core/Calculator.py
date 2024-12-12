@@ -1,3 +1,8 @@
+"""
+Copyright (с) 2024 Guardora.ai
+Non-Commercial Open Software License (NCOSL)
+"""
+
 import pandas as pd
 import numpy as np
 import configparser
