@@ -98,4 +98,5 @@ Após o treinamento, cada participante retém os parâmetros do modelo global re
 
 ---
 
+### **Licença**
 Guardora-VFL-Demo é licenciado sob Licença de Software Aberto Não Comercial (Non-Commercial Open Software License - NCOSL) (consulte o arquivo LICENSE para obter informações completas)
